@@ -4,15 +4,17 @@
 
 FILE *Input_Sample_File;
  
-int TrainDataBools[DATA_SAMPLES][FEATURES];
-int TestDataBools[DATA_SAMPLES][FEATURES];
+int TrainDataInput[DATA_SAMPLES][INPUTSIZE];
+int TestDataInput[DATA_SAMPLES][INPUTSIZE];
+int TestClass[DATA_SAMPLES];
+int TrainClass[DATA_SAMPLES];
 int TrainingLiterals[DATA_SAMPLES][LITERALS];
 int TestingLiterals[DATA_SAMPLES][LITERALS];
 
-int read_input_file(FILE *fp, int data[DATA_SAMPLES][FEATURES], char *fname)
+int read_input_file(FILE *fp, int data[DATA_SAMPLES][INPUTSIZE], char *fname)
 {
     
-    char buffer[256];
+    char buffer[500];
     int b;
     char *token = NULL;
     const char *s = " ";
@@ -33,7 +35,7 @@ int read_input_file(FILE *fp, int data[DATA_SAMPLES][FEATURES], char *fname)
         
         token = strtok(buffer, s);
 
-        for(int j = 0; j < FEATURES; j++)
+        for(int j = 0; j < INPUTSIZE; j++)
         {
             sscanf(token, "%d", &b);
             //printf("%d\n",b);
@@ -49,7 +51,7 @@ int read_input_file(FILE *fp, int data[DATA_SAMPLES][FEATURES], char *fname)
     
 }
 
-void print_input(int data[DATA_SAMPLES][FEATURES])
+void print_input(int data[DATA_SAMPLES][INPUTSIZE])
 {
     
     for(int i = 0; i < DATA_SAMPLES; i++)
@@ -57,7 +59,7 @@ void print_input(int data[DATA_SAMPLES][FEATURES])
 
         printf("Sample %d\t",i);
         
-        for(int j = 0; j < FEATURES; j++)
+        for(int j = 0; j < INPUTSIZE; j++)
         {
             printf("%d", data[i][j]);
         }
@@ -69,12 +71,16 @@ void print_input(int data[DATA_SAMPLES][FEATURES])
 
 
 
-int make_bool_literals(int input[DATA_SAMPLES][FEATURES], int output[DATA_SAMPLES][LITERALS])
+int make_bool_literals( int input[DATA_SAMPLES][INPUTSIZE], 
+                        int output[DATA_SAMPLES][LITERALS], 
+                        int class[DATA_SAMPLES])
 {
 
     for(int i = 0; i < DATA_SAMPLES; i++)
     {
-       
+        
+        class[i] = input[i][FEATURES];
+        
         for(int j = 0; j < FEATURES; j++)
         {   
      
@@ -85,16 +91,19 @@ int make_bool_literals(int input[DATA_SAMPLES][FEATURES], int output[DATA_SAMPLE
                 default: break;
             }
    
+            
             //printf("Sample %d Feature %d Input %d Comp %d\n", i, j, input[i][j], output[i][j+FEATURES]);
             
         }
+
+
 
     }
 
     return SUCCESS;
 }
 
-void print_literals(int data[DATA_SAMPLES][LITERALS])
+void print_literals(int data[DATA_SAMPLES][LITERALS], int class[DATA_SAMPLES])
 {
     
     for(int i = 0; i < DATA_SAMPLES; i++)
@@ -112,6 +121,8 @@ void print_literals(int data[DATA_SAMPLES][LITERALS])
         {
             printf("%d", data[i][j]);
         }
+
+        printf("\tClass %d", class[i]);
 
         printf("\n");
     }
