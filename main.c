@@ -5,37 +5,20 @@
 
 
 
-int tm[CLAUSES][LITERALS];
 
 
-int get_random()
-{
-
-    int r;
-
-    r = ( rand() % (TA_MAX + 1 - TA_MIN) ) + TA_MIN;
 
 
-    return r;
-}
 
-int init_tsetlin_machine(int tm[CLAUSES][LITERALS])
-{
+int print_ta_state(int tm[CLAUSES][LITERALS]);
 
-    for(int i = 0; i < CLAUSES; i++)
-    {
-        for(int j = 0; j < LITERALS; j++)
-        {
+void print_tm_input(int input[LITERALS]);
 
-            tm[i][j] = get_random();
+void print_clause_values(int input[CLAUSES]);
 
-        }
 
-    }
 
-    return SUCCESS;
 
-}
 
 int print_ta_state(int tm[CLAUSES][LITERALS])
 {
@@ -62,6 +45,44 @@ int print_ta_state(int tm[CLAUSES][LITERALS])
 
 
 
+void print_tm_input(int input[LITERALS])
+{
+
+    printf("TM Input Sample:\t");
+    for(int i = 0; i < FEATURES; i++)
+    {
+        printf("%d", input[i]);
+
+    }
+
+    printf(" ");
+
+    for(int i = FEATURES; i < LITERALS; i++)
+    {
+        printf("%d", input[i]);
+
+    }
+    printf("\n");
+
+}
+
+
+
+void print_clause_values(int input[CLAUSES])
+{
+
+    for(int i = 0; i < CLAUSES; i++)
+    {
+        printf("Clause: %d Value: %d\n", i, input[i]);
+    }
+    
+}
+
+
+
+
+
+
 int main(void)
 {
     srand(time(NULL));
@@ -71,23 +92,32 @@ int main(void)
     puts("Training and Testing Data aquired!");
     
     make_bool_literals(TrainDataInput, TrainingLiterals, TrainClass);
-    // make_bool_literals(TestDataInput, TestingLiterals, TestClass);
-    // puts("Training and Testing Literals acquired!");
+    make_bool_literals(TestDataInput, TestingLiterals, TestClass);
+    puts("Training and Testing Literals acquired!");
     
-    //init_tsetlin_machine(tm);
-    //puts("TA States initialised!");
+    init_tsetlin_machine(tm);
+    puts("TA States initialised!");
+
+    fetch_input_data(TrainingLiterals, tm_input);
+    //fetch_input_data(TestingLiterals, tm_input);
+    puts("Input Data!");
    
+    conjunction(tm, tm_input, clause_values);
+    summation(clause_values, &sum);
+    threshold(&sum, &tm_output);
+
     //print_input(TrainDataInput);
     //print_input(TestDataInput);
-    print_literals(TrainingLiterals, TrainClass);
+    //print_literals(TrainingLiterals, TrainClass);
     //print_literals(TestingLiterals, TestClass);
     //print_ta_state(tm);
+    //print_tm_input(tm_input);
+    //print_clause_values(clause_values);
+    
 
     return 0;
 
 }
-
-
 
 
 
